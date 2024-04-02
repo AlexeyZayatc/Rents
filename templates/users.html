@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
+    <title> Пользователи  </title>
+    <!-- Создать макрос для вывода таблицы без ключевого столбца, Параметры: имя таблицы, dataFrame с таблицей, имя
+        ключевого столбца -->
+        {% macro render_table(table_name, relation, id) %}
+        <table>
+            <tr>
+                {% for name in relation.dtypes.index %}
+                {% if name != id%}
+                <th>{{name}}</th>
+                {% endif %}
+                {% endfor %}
+                <th>Выбрать?</th>
+            </tr>
+            <tbody>
+                <!-- для всех строк таблицы -->
+                {% for i in range(relation.__len__()) %}
+                <tr>
+                    <!-- выводим значение каждого столбца -->
+                    {% for name in relation.dtypes.index %}
+                    <td> {{ relation.loc[i, name] }} </td>
+                    {% endfor %}
+                    <td><form action="{{url_for('rents')}}" method="get">
+                        <input type="hidden" name="user_id" value={{relation.loc[i, "ID" ]}}>
+                        <input type="submit" value="Выбрать">
+                    </form></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endmacro %}
+
+</head>
+
+<body>
+    <div class="menu">
+        <ul>
+            <li ><a href="{{url_for('index')}}">Консоли</a></li>
+           <li ><a href="{{url_for('rents')}}">Аренда</a></li>
+            <li class="active"><a href="{{url_for('users')}}">Пользователи</a></li>
+        </ul>
+    </div>
+    <div class="block">
+        <p>
+            <div id="zatemnenie">
+        
+                <div id="okno">
+                    <form action="{{url_for('users_post')}}" method="post">
+                        <p>
+                            Имя пользователя:
+                            <input type="text" name="new_user_name">
+                        </p>
+                        <p>
+                        Номер телефона:
+                        <input type="text" name="new_phone_number">
+                        </p>
+                        <a href="#" class="close">Отменить</a>
+                        <input type="submit" value="Новый пользователь">
+                    </form>
+                </div>
+              </div>
+              
+              <form method="get" id="search">
+                <div>
+                    Имя: 
+                    <input type="text" name="user_name" value={{userName if userName!=None else ""}}>
+                </div>
+                <div>
+                    Есть невозвращённая приставка: 
+                    <input type="checkbox" name="has_rented" {{'checked="checked"' if hasRented else ""}}>
+                </div>
+                <input type="submit" value="Найти">
+               </form>
+            
+            <a href="#zatemnenie">Добавить пользователя</a>
+        </p>
+        {{ render_table("Пользователи",users, "") }}
+    </div>
+
+</body>
+
+</html>

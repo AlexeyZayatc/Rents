@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
+    <title> Консоли  </title>
+    <!-- Создать макрос для вывода таблицы без ключевого столбца, Параметры: имя таблицы, dataFrame с таблицей, имя
+        ключевого столбца -->
+        {% macro render_table(table_name, relation, id) %}
+        <table>
+            <tr>
+                {% for name in relation.dtypes.index %}
+                {% if name != id%}
+                <th>{{name}}</th>
+                {% endif %}
+                {% endfor %}
+            </tr>
+            <tbody>
+                <!-- для всех строк таблицы -->
+                {% for i in range(relation.__len__()) %}
+                <tr>
+                    <!-- выводим значение каждого столбца -->
+                    {% for name in relation.dtypes.index %}
+                    {% if name != id%}
+                    {% if relation.loc[i,name]=="Доступна" %}
+                    <td>
+                        <form action="{{url_for('users')}}" method="get">
+                            <input type="hidden" name="console_id" value={{relation.loc[i, "ID" ]}}>
+                            <input type="submit" value="Доступна">
+                        </form>
+                    </td>
+                    {% else %}
+                    <td> {{ relation.loc[i, name] }} </td>
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endmacro %}
+
+        {% macro render_combo_box(combo_box) %}
+        <select name="new_console_company">
+            {% set n = len(combo_box) %}
+        {% for i in range(n) %}
+        {% if id_c == 0 %}
+        <option selected value={{i}}>
+            {% else %}
+        <option value={{i}}>
+            {% endif %}
+            {{ combo_box.loc[i, "Name"] }}
+        </option>
+        {% endfor %}
+        </select>
+        {% endmacro %}
+
+</head>
+
+<body>
+    <div class="menu">
+        <ul>
+            <li class="active"><a href="{{url_for('index')}}">Консоли</a></li>
+           <li ><a href="{{url_for('rents')}}">Аренда</a></li>
+            <li ><a href="{{url_for('users')}}">Пользователи</a></li>
+        </ul>
+    </div>
+    <div class="block">
+        <p>
+            <div id="zatemnenie">
+        
+                <div id="okno">
+                    <form action="{{url_for('index_post')}}" method="post">
+                        <p>
+                            Название консоли:
+                            <input type="text" name="new_console_name">
+                        </p>
+                        <p>
+                        Название компании:
+                        {{render_combo_box(companies)}}
+                        </p>
+                        <a href="#" class="close">Отменить</a>
+                        <input type="submit" value="Новая Консоль">
+                    </form>
+                </div>
+              </div>
+              
+              <form method="get" id="search">
+                <div>
+                    Название: 
+                    <input type="text" name="console_name" value={{consoleName}}>
+                </div>
+                <div>
+                    Доступность: 
+                    <input type="checkbox" name="is_not_rented" {{'checked="checked"' if isNotRented else ""}}>
+                </div>
+                <input type="submit" value="Найти">
+               </form>
+            
+            <a href="#zatemnenie">Добавить консоль</a>
+        </p>
+        {{ render_table("Консоли",consoles, "") }}
+    </div>
+
+</body>
+
+</html>

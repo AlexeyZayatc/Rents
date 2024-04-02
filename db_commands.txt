@@ -1,0 +1,69 @@
+CREATE TABLE COMPANY(
+ CompanyID INTEGER NOT NULL PRIMARY key , 
+  Name TEXT NOT NULL
+);
+
+CREATE TABLE USERS(
+  UserID INTEGER  NOT NULL PRIMARY key,
+  PhoneNumber TEXT NOT NULL,
+  Name TEXT NOT NULL,
+  Penalty INTEGER,
+  HasRented bit
+);
+
+CREATE TABLE CONSOLE(
+  ConsoleID INTEGER  NOT NULL PRIMARY key,
+  Name TEXT NOT NULL,
+  CompanyID INTEGER NOT NULL,
+  IsRented bit,
+  foreign key (CompanyID) references COMPANY(CompanyID)
+);
+
+CREATE TABLE RENT(
+  RentID INTEGER AUTO_INCREMENT NOT NULL PRIMARY key,
+  ConsoleID INTEGER NOT NULL,
+  UserID INTEGER NOT NULL,
+  RentDate date NOT NULL,
+  ReturnDate date,
+  foreign key (ConsoleID) references CONSOLE(ConsoleID),
+  foreign key (UserID) references USERS(UserID)
+);
+
+INSERT INTO COMPANY (CompanyID, Name) VALUES
+(0,"Sony");
+
+INSERT into COMPANY (Name) VALUES
+("Flex"),
+("Nintendo"),
+("Sega");
+
+INSERT INTO USERS VALUES
+(0,"89146652890","Gleb",0,false);
+
+INSERT INTO USERS(PhoneNumber,Name, Penalty, HasRented) VALUES
+("89146652891","Egor",0,false),
+("89146652892","Evgeniy",0,false),
+("89146652893","Tolya",0,false),
+("89146652894","Ilya",0,false),
+("89146652895","Sergey",0,false);
+
+INSERT INTO CONSOLE VALUES
+(0,"PS4",0,false);
+
+INSERT INTO CONSOLE (Name, CompanyID, IsRented) VALUES
+("PS3",0,false),
+("PS2",0,false),
+("PS1",0,false),
+("Xbox360",1,false),
+("Xbox one",1,false),
+("Xbox X",1,false),
+("Super Nintendo",2,false),
+("Nintendo64",2,false),
+("GameCube",2,false),
+("Wii",2,false),
+("Nintendo Switch",2,false),
+("Game Boy",2,false),
+("Saturn",3,false),
+("Mega Drive",3,false),
+("Master System",3,false),
+("Pico ",3,false);

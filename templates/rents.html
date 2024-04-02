@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
+    <title> Аренда  </title>
+    <!-- Создать макрос для вывода таблицы без ключевого столбца, Параметры: имя таблицы, dataFrame с таблицей, имя
+        ключевого столбца -->
+        {% macro render_table(table_name, relation, id) %}
+        <table>
+            <tr>
+                {% for name in relation.dtypes.index %}
+                {% if name != id%}
+                <th>{{name}}</th>
+                {% endif %}
+                {% endfor %}
+            </tr>
+            <tbody>
+                <!-- для всех строк таблицы -->
+                {% for i in range(relation.__len__()) %}
+                <tr>
+                    <!-- выводим значение каждого столбца -->
+                    {% for name in relation.dtypes.index %}
+                    {% if relation.loc[i,name]==None %}
+                    <td> 
+                        <form action="{{url_for('return_rent')}}">
+                        <input type="hidden" name="rent_return_id" value={{relation.loc[i,'RentID']}}> 
+                        <input type="submit" value="Вернуть аренду">
+                        </form>
+                    </td>
+                    {% else %}
+                    <td> {{ relation.loc[i, name] }} </td>
+                    {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endmacro %}
+
+</head>
+
+<body>
+    <div class="menu">
+        <ul>
+            <li ><a href="{{url_for('index')}}">Консоли</a></li>
+           <li class="active"><a href="{{url_for('rents')}}">Аренда</a></li>
+            <li ><a href="{{url_for('users')}}">Пользователи</a></li>
+        </ul>
+    </div>
+    <div class="block">
+        <p>
+            <div id="zatemnenie">
+        
+                <div id="okno">
+                    <form action="{{url_for('rents_post')}}" method="post">
+                        <p>
+                            Выбранный пользователь:<br>
+                            {% if not selected_user.empty %}
+                            <label>Имя: {{selected_user['Name'][0]}}</label> 
+                            <label>Номер телефона: {{selected_user['PhoneNumber'][0]}}</label>
+                            {% else %}
+                            <p>Пользователь не выбран!</p>
+                            {% endif %}
+                        </p>
+                        <p>
+                        Выбранная консоль:
+                        {% if not selected_console.empty  %}
+                        <p>Название: {{selected_console['CN'][0]}}</p>
+                        <p>Компания: {{selected_console['CMN'][0]}}</p>
+                        {% else %}
+                        <p>Консоль не выбран!</p>
+                        {% endif %}
+                        </p>
+                        <a href="#" class="close">Отменить</a>
+                        <input type="hidden" name="rent_user_id" value={{session['user_id']}}>
+                        <input type="hidden" name="rent_console_id" value={{session['console_id']}}> 
+                        <input type="submit" value="Новая аренда">
+                    </form>
+                </div>
+              </div>
+              <form method="get" id="search">
+                <div>
+                    Имя: 
+                    <input type="text" name="rents_user_name" value={{userName if userName!=None else ""}}>
+                </div>
+                <div>
+                    ID: 
+                    <input type="text" name="rents_console_id" value={{consoleId if consoleId!=None else ""}}>
+                </div>
+                <div>
+                    Возвращена: 
+                    <input type="checkbox" name="rents_returned" {{'checked="checked"' if onlyReturned else ""}}>
+                    Только возвращённые
+                </div>
+                <input type="submit" value="Найти">
+               </form>
+            
+            <a href="#zatemnenie">Добавить аренду</a>
+        </p>
+        {{ render_table("Аренда",rents, "") }}
+    </div>
+
+</body>
+
+</html>

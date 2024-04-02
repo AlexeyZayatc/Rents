@@ -1,0 +1,55 @@
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
+    <meta charset="UTF-8">
+    <title>Возврат приставки</title>
+</head>
+
+<body>
+    <div class="menu">
+        <ul>
+            <li><a href="{{url_for('index')}}">Консоли</a></li>
+           <li ><a href="{{url_for('rents')}}">Аренда</a></li>
+            <li ><a href="{{url_for('users')}}">Пользователи</a></li>
+            <li class="active"><a href="{{url_for('return_rent')}}">Возврат приставки</a></li>
+        </ul>
+    </div>
+    Возврат приставки
+
+    <form action="{{url_for('return_rent_post')}}" method="post">
+        <p>
+            <p>
+                RentID: {{rent_return_id}}
+            </p>
+            Пользователь:<br>
+            {% if not selected_user.empty %}
+            <label>Имя: {{selected_user['Name'][0]}}</label> 
+            <label>Номер телефона: {{selected_user['PhoneNumber'][0]}}</label>
+            {% else %}
+            <p>Пользователь не выбран!</p>
+            {% endif %}
+            </p>
+            <p>
+            Консоль:
+            {% if not selected_console.empty  %}
+            <p>Название: {{selected_console['CN'][0]}}</p>
+            <p>Компания: {{selected_console['CMN'][0]}}</p>
+            {% else %}
+            <p>Консоль не выбран!</p>
+            {% endif %}
+            </p>
+            <p>
+                Штраф:
+                <input type="hidden" name="rent_return_id" value={{rent_return_id}}>
+                <input type="number" name="penalty">
+            </p>
+        <input type="submit" value="Вернуть приставку">
+    </form>
+    <a href="{{url_for('rents')}}">
+        <button>Отменить</button>
+    </a>
+
+</body>
+
+</html>
