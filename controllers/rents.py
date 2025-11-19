@@ -10,8 +10,12 @@ def rents():
 
     if request.values.get("console_id")!=None:
         session["console_id"] = request.values.get("console_id")
+    else:
+        session["console_id"] = 0
     if request.values.get("user_id")!=None:
         session["user_id"] = request.values.get("user_id")
+    else:
+        session["user_id"] = 0
 
     user_name = request.values.get('rents_user_name')
     console_id = request.values.get('rents_console_id')

@@ -27,7 +27,7 @@ def get_rent_search(conn, name = '', id = None, only_returned = False):
         if name!='':
             commands.append('USERS.Name like "' + name +'%"')
         if only_returned:
-            commands.append("ReturnDate!=NULL")
+            commands.append('ReturnDate is not NULL')
         if id!=None:
             commands.append("ConsoleID==" + str(id))
         command+=' and '.join(commands)
